@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  ai-publisher:
+    image: mirzaasadijaz/ai-linkedin-publisher:latest
+    container_name: ai-publisher-container
+    
+    env_file:
+      - .env
+      
+    ports:
+      - "8080:8080"
+      
+    volumes:
+      - ./used_topics.db:/app/used_topics.db
+      
+    restart: unless-stopped

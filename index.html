@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Auto-Publisher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-3xl p-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">🚀 AI Autonomous Publisher</h1>
+        <p class="text-gray-500 mb-8">Click the button below to let your AI agents research, draft, review, and post content.</p>
+
+        <!-- Generate Button -->
+        <button id="generateBtn" onclick="startPipeline()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
+            Start Agentic Pipeline
+        </button>
+
+        <!-- Loading State -->
+        <div id="loadingDiv" class="hidden mt-8 text-center">
+            <div class="animate-spin inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mb-4" role="status"></div>
+            <p class="text-gray-600 font-medium animate-pulse">Agents are working... This may take a minute...</p>
+        </div>
+
+        <!-- Result Box -->
+        <div id="resultDiv" class="hidden mt-8 border-t pt-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Pipeline Results:</h2>
+            
+            <div class="mb-4">
+                <span class="font-bold text-gray-700">Topic Selected:</span>
+                <p id="resTopic" class="text-gray-600 bg-gray-50 p-2 rounded mt-1"></p>
+            </div>
+
+            <div class="mb-4">
+                <span class="font-bold text-gray-700">Final Post Draft:</span>
+                <pre id="resDraft" class="text-gray-600 bg-gray-50 p-4 rounded mt-1 whitespace-pre-wrap font-sans text-sm"></pre>
+            </div>
+
+            <div>
+                <span class="font-bold text-gray-700">Status:</span>
+                <p id="resStatus" class="font-semibold text-green-600 bg-green-50 p-2 rounded mt-1 inline-block"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to Handle API Call -->
+    <script>
+        async function startPipeline() {
+            const btn = document.getElementById('generateBtn');
+            const loading = document.getElementById('loadingDiv');
+            const result = document.getElementById('resultDiv');
+
+            // UI changes while loading
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            result.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            try {
+                // Call FastAPI Endpoint
+                const response = await fetch('/api/generate-and-post', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                // Update UI with results
+                document.getElementById('resTopic').innerText = data.topic;
+                document.getElementById('resDraft').innerText = data.draft;
+                document.getElementById('resStatus').innerText = data.result_message;
+                
+                loading.classList.add('hidden');
+                result.classList.remove('hidden');
+            } catch (error) {
+                alert("Error connecting to the API!");
+                loading.classList.add('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+    </script>
+</body>
+</html>
