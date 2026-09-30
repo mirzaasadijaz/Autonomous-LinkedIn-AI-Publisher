@@ -205,6 +205,3 @@ The web UI calls `POST /api/generate-and-post`, which returns:
 
 ---
 
-## 📄 License
-
-Add your preferred license here (e.g. MIT).
